@@ -2,7 +2,8 @@ import QtQuick 2.10
 import QtQuick.Controls 2.3
 import QtQuick.Window 2.2
 import QtMultimedia 5.9
-import QtQuick.Layouts 1.1
+import QtQuick.Layouts 1.3
+import QtQml 2.2
 
 ApplicationWindow {
     visible: true
@@ -11,6 +12,8 @@ ApplicationWindow {
     title: qsTr("TimeLapse Camera")
 
     property int dpi: Screen.pixelDensity * 25.4
+    property var timerMultVal : 1000; //default - sec
+    property var imageCount: 0;
 
     function dp(x){
         //console.log(dpi)
@@ -23,6 +26,41 @@ ApplicationWindow {
             return x*(dpi/160);
         }
     }
+    function updateTimerValues(){
+
+        switch (cbTimerValueType.currentIndex){
+        case 0:
+            console.log("msec");
+            timerMultVal = 1;
+            lbIntervalValue.text = (tfTimerValue.text + " msec");
+            break;
+        case 1:
+            console.log("sec");
+            timerMultVal = 1000;
+            lbIntervalValue.text = (tfTimerValue.text + " sec");
+            break;
+        case 2:
+            console.log ("min");
+            timerMultVal = 60000;
+            lbIntervalValue.text = (tfTimerValue.text + " min");
+            break;
+        }
+        camTimer.interval = Number(tfTimerValue.text)*timerMultVal;
+    }
+    Timer {
+        id: camTimer
+        interval: 1000
+        running: false;
+        repeat: true;
+        onTriggered: {
+            console.log("timer event");
+            //if (imageCount == 0)
+            mmCamera.searchAndLock();
+            mmCamera.imageCapture.captureToLocation("/storage/emulated/0/DCIM/Camera");
+            //mmCamera.imageCapture;
+            imageCount++;
+        }
+    }
     GridLayout {
         anchors.fill: parent
         rows: 1
@@ -30,32 +68,27 @@ ApplicationWindow {
         rowSpacing: 0
         columnSpacing: 0
         Rectangle {
-            color: "darkgrey"
+            color: "lightgrey"
             implicitWidth: parent.width-dp(190)
             implicitHeight: parent.height
-            Rectangle {
-                color: "grey"
-                implicitWidth: parent.width
-                implicitHeight: parent.height
-                Camera {
-                    id: mmCamera
-                    captureMode: Camera.CaptureStillImage
-                    imageCapture{
-                        onImageCaptured:{
-                            console.log("onImageCaptured");
-                            console.log(mmCamera.imageCapture.capturedImagePath)
-                            lbFileNameValue.text = mmCamera.imageCapture.capturedImagePath
-                        }
-                        onImageSaved:{
-                            console.log("onImageSaved");
-                        }
+            Camera {
+                id: mmCamera
+                captureMode: Camera.CaptureStillImage
+                imageCapture{
+                    onImageCaptured:{
+                        console.log("onImageCaptured");
+                        console.log(mmCamera.imageCapture.capturedImagePath)
+                        lbFileNameValue.text = mmCamera.imageCapture.capturedImagePath
+                    }
+                    onImageSaved:{
+                        console.log("onImageSaved");
                     }
                 }
-                VideoOutput {
-                    id: videoOutput
-                    source: mmCamera
-                    anchors.fill: parent
-                }
+            }
+            VideoOutput {
+                id: videoOutput
+                source: mmCamera
+                anchors.fill: parent
             }
         }
         Rectangle {
@@ -64,33 +97,45 @@ ApplicationWindow {
             implicitHeight: parent.height
             GridLayout {
                 id: gridLoUI
-                rows: 5
+                rows: 4
                 columns: 2
                 anchors.fill: parent
                 rowSpacing: 2
                 columnSpacing: 5
-                Rectangle {
+                Label {
+                    id: lbAppName
                     Layout.row: 1
-                    Layout.columnSpan:2
-                    Label {
-                        id: lbAppName
-                        text: qsTr("TimeLapse Camera")
-                        horizontalAlignment: Text.AlignHCenter
-                    }
+                    Layout.columnSpan: 2
+                    Layout.fillWidth: true
+                    text: qsTr("TimeLapse Camera")
+                    horizontalAlignment: Text.AlignHCenter
                 }
 
-                Rectangle {
-                    Layout.row: 1
-                    Layout.columnSpan:2
-                    Switch{
-                        id: swStart
-                        text: qsTr("Start")
+                Switch{
+                    id: swStart
+                    Layout.row: 2
+                    Layout.columnSpan: 2
+                    Layout.fillWidth: true
+                    text: qsTr("Start")
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                    onToggled: {
+                        if (swStart.checked){
+                            console.log(Number(tfTimerValue.text))
+                            updateTimerValues()
+                            camTimer.start()
+                            console.log("timer on")
+                        }
+                        else {
+                            camTimer.stop()
+                            console.log("timer off")
+                        }
                     }
+
                 }
 
                 TextField {
                     id: tfTimerValue
-                    text: qsTr("10")
+                    text: qsTr("2")
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                     horizontalAlignment: Text.AlignRight
                     Layout.maximumWidth: dp(50)
@@ -115,14 +160,60 @@ ApplicationWindow {
                     }
 
                 }
-                Button{
-                    text: "Test"
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+
+                GroupBox {
+                    Layout.row: 4
+                    Layout.columnSpan: 2
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    id: gbStatusBar
+                    title: qsTr("info")
+                    GridLayout {
+                        id: gridLoInfo
+                        anchors.fill: parent
+                        columns: 2
+                        rows: 3
+                        //rowSpacing: 2
+                        //columnSpacing: 5
+                        Label {
+                            id: lbSavedTo
+                            text: qsTr("Save to:")
+                        }
+                        Label {
+                            id: lbSavedToValue
+                            width: parent.width-dp(80)
+                            text: qsTr("Internal")
+                        }
+                        Label {
+                            id: lbInterval
+                            text: qsTr("Timer:")
+                        }
+                        Label {
+                            id: lbIntervalValue
+                            width: parent.width-dp(80)
+                            text: qsTr("1 sec")
+                        }
+                        Label {
+                            id: lbFileName
+                            text: qsTr("name:")
+                        }
+                        Label {
+                            id: lbFileNameValue
+                            width: parent.width-dp(160)
+                            text: qsTr("NAME_0000.jpg")
+                        }
+                        Label {
+                            id: lbMakePicture
+                            text: qsTr("Shot:")
+                        }
+                        Label {
+                            id: lbMakePictureValue
+                            width: parent.width-dp(160)
+                            text: qsTr("wait timer")
+                        }
+                    }
                 }
-                Button{
-                    text: "More"
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                }
+
             }
         }
     }
