@@ -31,14 +31,98 @@ ApplicationWindow {
         columnSpacing: 0
         Rectangle {
             color: "darkgrey"
-            implicitWidth: parent.width-dp(160)
+            implicitWidth: parent.width-dp(190)
             implicitHeight: parent.height
+            Rectangle {
+                color: "grey"
+                implicitWidth: parent.width
+                implicitHeight: parent.height
+                Camera {
+                    id: mmCamera
+                    captureMode: Camera.CaptureStillImage
+                    imageCapture{
+                        onImageCaptured:{
+                            console.log("onImageCaptured");
+                            console.log(mmCamera.imageCapture.capturedImagePath)
+                            lbFileNameValue.text = mmCamera.imageCapture.capturedImagePath
+                        }
+                        onImageSaved:{
+                            console.log("onImageSaved");
+                        }
+                    }
+                }
+                VideoOutput {
+                    id: videoOutput
+                    source: mmCamera
+                    anchors.fill: parent
+                }
+            }
         }
         Rectangle {
             color: "lightgrey"
-            implicitWidth: dp(160)
+            implicitWidth: dp(190)
             implicitHeight: parent.height
-            Switch{
+            GridLayout {
+                id: gridLoUI
+                rows: 5
+                columns: 2
+                anchors.fill: parent
+                rowSpacing: 2
+                columnSpacing: 5
+                Rectangle {
+                    Layout.row: 1
+                    Layout.columnSpan:2
+                    Label {
+                        id: lbAppName
+                        text: qsTr("TimeLapse Camera")
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+                }
+
+                Rectangle {
+                    Layout.row: 1
+                    Layout.columnSpan:2
+                    Switch{
+                        id: swStart
+                        text: qsTr("Start")
+                    }
+                }
+
+                TextField {
+                    id: tfTimerValue
+                    text: qsTr("10")
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                    horizontalAlignment: Text.AlignRight
+                    Layout.maximumWidth: dp(50)
+                    Layout.minimumWidth: dp(50)
+                    Layout.preferredWidth: dp(50)
+                    onTextChanged: {
+                        console.log("timer value changed")
+                    }
+                }
+
+                ComboBox {
+                    id: cbTimerValueType
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                    rightPadding: 20
+                    model: ["msec", "sec", "min"]
+                    currentIndex: 1
+                    Layout.maximumWidth: dp(100)
+                    Layout.preferredWidth: dp(100)
+                    Layout.minimumWidth: dp(100)
+                    onCurrentIndexChanged: {
+                        console.log("sec\min changed")
+                    }
+
+                }
+                Button{
+                    text: "Test"
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                }
+                Button{
+                    text: "More"
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                }
             }
         }
     }
