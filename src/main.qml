@@ -54,8 +54,10 @@ ApplicationWindow {
         repeat: true;
         onTriggered: {
             console.log("timer event");
-            //if (imageCount == 0)
-            mmCamera.searchAndLock();
+            lbMakePictureValue.text = "get picture";
+            if (imageCount == 0){
+                mmCamera.searchAndLock();
+            }
             mmCamera.imageCapture.captureToLocation("/storage/emulated/0/DCIM/Camera");
             //mmCamera.imageCapture;
             imageCount++;
@@ -78,10 +80,14 @@ ApplicationWindow {
                     onImageCaptured:{
                         console.log("onImageCaptured");
                         console.log(mmCamera.imageCapture.capturedImagePath)
-                        lbFileNameValue.text = mmCamera.imageCapture.capturedImagePath
+
                     }
                     onImageSaved:{
                         console.log("onImageSaved");
+                        var imgPath = mmCamera.imageCapture.capturedImagePath
+                        var lastSlash = imgPath.lastIndexOf("/");
+                        var strLength = imgPath.length
+                        lbFileNameValue.text = imgPath.substr((lastSlash+1),(strLength-lastSlash))
                     }
                 }
             }
@@ -201,15 +207,6 @@ ApplicationWindow {
                             id: lbFileNameValue
                             width: parent.width-dp(160)
                             text: qsTr("NAME_0000.jpg")
-                        }
-                        Label {
-                            id: lbMakePicture
-                            text: qsTr("Shot:")
-                        }
-                        Label {
-                            id: lbMakePictureValue
-                            width: parent.width-dp(160)
-                            text: qsTr("wait timer")
                         }
                     }
                 }
