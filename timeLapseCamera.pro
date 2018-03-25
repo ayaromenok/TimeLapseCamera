@@ -1,6 +1,6 @@
 QT += quick
 CONFIG += c++11
-
+TARGET = 33_TimeLapseCamera
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += src/main.cpp
