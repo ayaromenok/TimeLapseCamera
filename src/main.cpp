@@ -12,6 +12,8 @@ int main(int argc, char *argv[])
     YFileIO yf;
     qDebug() << "current dir" << yf.getCurrentDir();
 
+    qmlRegisterType<YFileIO> ("FileIO", 1, 0, "FileIO");
+
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())

@@ -4,6 +4,7 @@ import QtQuick.Window 2.2
 import QtMultimedia 5.9
 import QtQuick.Layouts 1.3
 import QtQml 2.2
+import FileIO 1.0
 
 ApplicationWindow {
     visible: true
@@ -14,7 +15,17 @@ ApplicationWindow {
     property int dpi: Screen.pixelDensity * 25.4
     property var timerMultVal : 1000; //default - sec
     property var imageCount: 0;
+    property var atStart: 0;
 
+    FileIO{
+        id: fio
+    }
+
+    function getCurrentDir()
+    {
+        console.log(fio.getCurrentDir())
+        return fio.getCurrentDir()
+    }
     function dp(x){
         //console.log(dpi)
 //        if(dpi < 120) {
@@ -58,6 +69,10 @@ ApplicationWindow {
             if (imageCount == 0){
                 mmCamera.searchAndLock();
             }
+            if (atStart == 0){
+                getCurrentDir()
+                atStart++
+            }
             mmCamera.imageCapture.captureToLocation("/storage/emulated/0/DCIM/Camera");
             //mmCamera.imageCapture;
             imageCount++;
@@ -80,8 +95,7 @@ ApplicationWindow {
                 imageCapture{
                     onImageCaptured:{
                         console.log("onImageCaptured");
-                        console.log(mmCamera.imageCapture.capturedImagePath)
-
+                        console.log(mmCamera.imageCapture.capturedImagePath)                        
                     }
                     onImageSaved:{
                         console.log("onImageSaved");
