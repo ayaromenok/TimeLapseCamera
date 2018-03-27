@@ -1,0 +1,40 @@
+Privacy Policy
+
+Andrey Yaromenok built the TimeLapse Camera app as a open source and free App. 
+
+This App is provided by Andrey Yaromenok at no cost and is intended for use as is.
+
+This page is used to inform website visitors regarding my policies with the collection, use, and
+    disclosure of Personal Information if anyone decided to use my App.
+If you choose to use my Service, then you agree to the collection and use of information in
+    relation with this policy. The Personal Information that [I|we] collect are used for providing and
+    improving the Service. I will not use or share your information with anyone except as described
+    in this Privacy Policy.
+    
+The terms used in this Privacy Policy have the same meanings as in our Terms and Conditions,
+    which is accessible at TimeLapse Camera, unless otherwise defined in this Privacy Policy.</p>
+
+Information Collection and Use
+This app do not collect any information and not send in to anybody.
+
+Log Data
+I want to inform you that whenever you use my App, it use debug logging until recieve stable status (at version 1.+).
+This ligging info not saved and can be used only if you build this app from source(and not accessible from App from Google Play)
+
+Cookies
+    No cookies used by this app
+ 
+Children’s Privacy
+    This app do not content anything unsutable to children
+ 
+Changes to This Privacy Policy
+I may update our Privacy Policy from time to time. Thus, you are advised to review this page
+    periodically for any changes. I will notify you of any changes by posting the new Privacy Policy
+    on this page. These changes are effective immediately, after they are posted on this page.
+
+Contact Me
+If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me by 
+ e-mail: ayaromenok at gmail.com
+ github: https://github.com/ayaromenok
+
+
