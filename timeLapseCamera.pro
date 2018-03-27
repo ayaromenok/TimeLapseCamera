@@ -1,9 +1,10 @@
 QT += quick
 CONFIG += c++11
-TARGET = 33_TimeLapseCamera
+TARGET = TimeLapse_Camera
 DEFINES += QT_DEPRECATED_WARNINGS
 
-SOURCES += src/main.cpp
+SOURCES += src/main.cpp \
+    src/yfileio.cpp
 
 RESOURCES += src/qml.qrc
 
@@ -28,3 +29,6 @@ DISTFILES += \
     android/gradlew.bat
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+
+HEADERS += \
+    src/yfileio.h
