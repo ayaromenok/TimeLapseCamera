@@ -9,8 +9,10 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
-    YFileIO yf;
-    qDebug() << "current dir" << yf.getCurrentDir();
+//    YFileIO yf;
+//    qDebug() << "current dir" << yf.getCurrentDir();
+//    qDebug() << "use Int Dir" << yf.useInternalStorage();
+//    qDebug() << "use Ext Dir" << yf.useExternalStorage();
 
     qmlRegisterType<YFileIO> ("FileIO", 1, 0, "FileIO");
 

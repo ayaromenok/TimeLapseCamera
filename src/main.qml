@@ -16,6 +16,7 @@ ApplicationWindow {
     property var timerMultVal : 1000; //default - sec
     property var imageCount: 0;
     property var atStart: 0;
+    property string saveToPath: "/storage/emulated/0/DCIM";
 
     FileIO{
         id: fio
@@ -28,14 +29,14 @@ ApplicationWindow {
     }
     function dp(x){
         //console.log(dpi)
-//        if(dpi < 120) {
-//            console.log(x);
-//            return x;
+        //        if(dpi < 120) {
+        //            console.log(x);
+        //            return x;
 
-//        } else {
-//            console.log(x*(dpi/160));
-//            return x*(dpi/160);
-//        }
+        //        } else {
+        //            console.log(x*(dpi/160));
+        //            return x*(dpi/160);
+        //        }
         return x;
     }
     function updateTimerValues(){
@@ -59,6 +60,21 @@ ApplicationWindow {
         }
         camTimer.interval = Number(tfTimerValue.text)*timerMultVal;
     }
+    function updateStorage(){
+        switch (cbStorage.currentIndex){
+        case 0:
+            console.log("Save to Internal storage")
+            saveToPath = fio.useInternalStorage()
+            break;
+        case 1:
+            console.log("Save to External(SD card) storage")
+            saveToPath = fio.useExternalStorage()
+            //saveToPath = "some path"
+            break;
+        }
+        console.log(saveToPath)
+    }
+
     Timer {
         id: camTimer
         interval: 1000
@@ -71,9 +87,10 @@ ApplicationWindow {
             }
             if (atStart == 0){
                 getCurrentDir()
+                fio.useInternalStorage();
                 atStart++
             }
-            mmCamera.imageCapture.captureToLocation("/storage/emulated/0/DCIM/Camera");
+            mmCamera.imageCapture.captureToLocation(saveToPath);
             //mmCamera.imageCapture;
             imageCount++;
             lbFileCountValue.text = Number(imageCount)
@@ -95,7 +112,7 @@ ApplicationWindow {
                 imageCapture{
                     onImageCaptured:{
                         console.log("onImageCaptured");
-                        console.log(mmCamera.imageCapture.capturedImagePath)                        
+                        console.log(mmCamera.imageCapture.capturedImagePath)
                     }
                     onImageSaved:{
                         console.log("onImageSaved");
@@ -118,7 +135,7 @@ ApplicationWindow {
             implicitHeight: parent.height
             GridLayout {
                 id: gridLoUI
-                rows: 5
+                rows: 6
                 columns: 2
                 anchors.fill: parent
                 rowSpacing: 2
@@ -167,7 +184,7 @@ ApplicationWindow {
                                 }
                             }
                         }
-                           }
+                    }
                 }
 
 
@@ -192,9 +209,9 @@ ApplicationWindow {
                     rightPadding: 20
                     model: ["msec", "sec", "min"]
                     currentIndex: 1
-                    Layout.maximumWidth: dp(100)
-                    Layout.preferredWidth: dp(100)
-                    Layout.minimumWidth: dp(100)
+                    Layout.maximumWidth: dp(110)
+                    Layout.preferredWidth: dp(110)
+                    Layout.minimumWidth: dp(110)
                     onCurrentIndexChanged: {
                         console.log("sec\min changed")
                         updateTimerValues()
@@ -202,18 +219,36 @@ ApplicationWindow {
 
                 }
 
+                Label {
+                    id: lbStorage
+                    text: "Save To"
+                }
+
+                ComboBox {
+                    id: cbStorage
+                    model: ["Internal", "SD Card"]
+                    currentIndex: 0
+                    rightPadding: 20
+                    Layout.maximumWidth: dp(110)
+                    Layout.preferredWidth: dp(110)
+                    Layout.minimumWidth: dp(110)
+                    onCurrentIndexChanged: {
+                        updateStorage()
+                    }
+                }
+
                 Rectangle {
                     id: rcStub
                     Layout.minimumHeight: 60
                     Layout.minimumWidth: 60
-                    Layout.row: 4
+                    Layout.row: 5
                     Layout.columnSpan: 2
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     color: "lightgrey"
                 }
                 GroupBox {
-                    Layout.row: 5
+                    Layout.row: 6
                     Layout.columnSpan: 2
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -264,6 +299,8 @@ ApplicationWindow {
                         }
                     }
                 }
+
+
 
             }
         }

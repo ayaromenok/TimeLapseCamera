@@ -39,17 +39,18 @@ YFileIO::useExternalStorage()
     else {
         QFileInfoList list = dirStorage.entryInfoList();
         for (int i=0; i<list.size(); i++){
-            if (list.at(i).fileName().contains("/storege/0")){
+            if (list.at(i).fileName().contains("/storege/emulated/0")){
                 qDebug() << "this is a Internal storage, skipping";
             } else {
                 camDir.clear();
                 camDir.append("/storage/");
                 camDir.append(list.at(i).fileName());
 
-                camDir.append("/DCIM/Camera");
+                camDir.append("/DCIM");
                 dirStorage.setPath(camDir);
                 if (dirStorage.exists()){
                     qDebug() << "Camera photoDir" << camDir;
+                    return camDir;
                 }
             }
         }
