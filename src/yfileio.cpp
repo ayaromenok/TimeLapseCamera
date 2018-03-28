@@ -18,28 +18,32 @@ YFileIO::getCurrentDir()
     return QDir::currentPath();
 }
 
-bool
+QString
 YFileIO::useInternalStorage()
 {
     qDebug() << "useInternalStorage()";
     QDir dir;
-    return dir.cd("/storage/emulated/0/DCIM");
+    if (dir.cd("/storage/emulated/0/DCIM"))
+        return "/storage/emulated/0/DCIM";
+    return "false";
 }
 
-bool
+QString
 YFileIO::useExternalStorage()
 {
     qDebug() << "useExternalStorage()";
     QDir dirStorage("/storage");
+    QString camDir("/storage/");
     if (!dirStorage.exists())
-        return false;
+        return "false";
     else {
         QFileInfoList list = dirStorage.entryInfoList();
         for (int i=0; i<list.size(); i++){
             if (list.at(i).fileName().contains("/storege/0")){
                 qDebug() << "this is a Internal storage, skipping";
             } else {
-                QString camDir("/storage/");
+                camDir.clear();
+                camDir.append("/storage/");
                 camDir.append(list.at(i).fileName());
 
                 camDir.append("/DCIM/Camera");
@@ -50,5 +54,5 @@ YFileIO::useExternalStorage()
             }
         }
     }
-    return true;
+    return camDir;
 }

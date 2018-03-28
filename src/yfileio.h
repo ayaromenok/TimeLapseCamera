@@ -14,8 +14,8 @@ signals:
 
 public slots:
     Q_INVOKABLE QString getCurrentDir();
-    Q_INVOKABLE bool useInternalStorage();
-    Q_INVOKABLE bool useExternalStorage();
+    Q_INVOKABLE QString useInternalStorage();
+    Q_INVOKABLE QString useExternalStorage();
 };
 
 #endif // YFILEIO_H
