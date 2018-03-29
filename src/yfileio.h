@@ -18,10 +18,13 @@ public slots:
     Q_INVOKABLE QString useInternalStorage();
     Q_INVOKABLE QString useExternalStorage();
     Q_INVOKABLE QString usePreviousStorage();
+    Q_INVOKABLE QString getCurrentDateTime();
+    Q_INVOKABLE QString getDateTimeDir();
 
 private:
     QSettings _settings;
     QString     _strIntStorage;
+    QString     _strAppName;
 };
 
 #endif // YFILEIO_H

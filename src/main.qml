@@ -64,7 +64,7 @@ ApplicationWindow {
     function updateStorage(){
         switch (cbStorage.currentIndex){
         case 0:
-            console.log("Save to Internal storage")
+            console.log("Save to Internal storage")            
             saveToPath = fio.useInternalStorage()
             break;
         case 1:
@@ -72,7 +72,7 @@ ApplicationWindow {
             saveToPath = fio.useExternalStorage()
             //saveToPath = "some path"
             break;
-        }
+        }        
         console.log(saveToPath)
     }
 
@@ -93,12 +93,14 @@ ApplicationWindow {
             console.log("timer event");
             if (imageCount == 0){
                 mmCamera.searchAndLock();
+                saveToPath = fio.getDateTimeDir()
             }
             if (atStart == 0){
                 getCurrentDir()
                 fio.useInternalStorage();
                 atStart++
             }
+
             mmCamera.imageCapture.captureToLocation(saveToPath);
             //mmCamera.imageCapture;
             imageCount++;
@@ -190,13 +192,12 @@ ApplicationWindow {
                                     console.log("timer off")
                                     swStart.text = qsTr("Start Capture")
                                     imageCount = 0
+                                    console.log(imageCount)
                                 }
                             }
                         }
                     }
                 }
-
-
 
                 TextField {
                     id: tfTimerValue

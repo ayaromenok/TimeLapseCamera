@@ -2,11 +2,13 @@
 #include <QDebug>
 #include <QDir>
 #include <QStringList>
+#include <QDateTime>
+
 YFileIO::YFileIO(QObject *parent) : QObject(parent)
 {
     qDebug() << "YFileIO()";
     _strIntStorage.append("/storage/emulated/0/DCIM");
-    //_settings.setValue("path/current",QDir::currentPath());
+    _strAppName.append("ZeitrafferCamera");
 }
 
 YFileIO::~YFileIO()
@@ -25,9 +27,17 @@ YFileIO::useInternalStorage()
 {
     qDebug() << "useInternalStorage()";
     QDir dir;
-    if (dir.cd(_strIntStorage)){
-        _settings.setValue("path/current",_strIntStorage);
-        return _strIntStorage;
+    QString camDir(_strIntStorage);
+    if (dir.cd(camDir)){
+        camDir.append("/"+_strAppName);
+        dir.setPath(camDir);
+        if (!dir.exists()){
+            qDebug() << "creating dir"<<camDir;
+            dir.mkpath(camDir);
+        }
+
+        _settings.setValue("path/current",camDir);
+        return camDir;
     }
     return "false";
 }
@@ -43,7 +53,8 @@ YFileIO::useExternalStorage()
     else {
         QFileInfoList list = dirStorage.entryInfoList();
         for (int i=0; i<list.size(); i++){
-            if (list.at(i).fileName().contains(_strIntStorage)){
+            if (list.at(i).fileName().contains(_strIntStorage) ||
+                    list.at(i).fileName().contains("/storage/.") ){
                 qDebug() << "this is a Internal storage, skipping";
             } else {
                 camDir.clear();
@@ -51,8 +62,17 @@ YFileIO::useExternalStorage()
                 camDir.append(list.at(i).fileName());
 
                 camDir.append("/DCIM");
-                dirStorage.setPath(camDir);
+                dirStorage.setPath(camDir);                
                 if (dirStorage.exists()){
+                    camDir.append("/"+_strAppName);
+                    dirStorage.setPath(camDir);
+                    if (!dirStorage.exists()){
+                        qDebug() << "creating dir"<<camDir;
+                        if (dirStorage.mkpath(camDir))
+                            qDebug() << "dir OK" << camDir;
+                        else
+                            qDebug() << "dir ERROR" << camDir;
+                    }
                     _settings.setValue("path/current",camDir);
                     return camDir;
                 }
@@ -78,3 +98,26 @@ YFileIO::usePreviousStorage()
     return result;
 }
 
+QString
+YFileIO::getCurrentDateTime()
+{
+    QDateTime dt;
+    return (dt.currentDateTime()).toString("yyMMdd_HHmmss");
+}
+
+QString
+YFileIO::getDateTimeDir()
+{
+    QDir dir;
+    QString strDir(usePreviousStorage());
+    strDir.append("/"+getCurrentDateTime());
+    dir.setPath(strDir);
+    dir.mkpath(strDir);
+    if (!dir.exists()){
+        //use root camera dir
+        strDir.clear();
+        strDir.append(usePreviousStorage());
+    }
+    qDebug() << "cur date/time dir" << strDir;
+    return strDir;
+}
