@@ -64,14 +64,21 @@ YFileIO::useExternalStorage()
                 camDir.append("/DCIM");
                 dirStorage.setPath(camDir);                
                 if (dirStorage.exists()){
+                    dirStorage.cd(camDir);
                     camDir.append("/"+_strAppName);
                     dirStorage.setPath(camDir);
                     if (!dirStorage.exists()){
                         qDebug() << "creating dir"<<camDir;
                         if (dirStorage.mkpath(camDir))
                             qDebug() << "dir OK" << camDir;
-                        else
+                        else {
                             qDebug() << "dir ERROR" << camDir;
+                            qDebug() << "try mkdir";
+                            if (dirStorage.mkdir(_strAppName))
+                                qDebug() << "mkdir OK";
+                            else
+                                qDebug() << "mkdir ALSO FAIL";
+                        }
                     }
                     _settings.setValue("path/current",camDir);
                     return camDir;
