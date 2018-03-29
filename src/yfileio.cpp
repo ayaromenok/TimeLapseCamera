@@ -5,6 +5,8 @@
 YFileIO::YFileIO(QObject *parent) : QObject(parent)
 {
     qDebug() << "YFileIO()";
+    _strIntStorage.append("/storage/emulated/0/DCIM");
+    //_settings.setValue("path/current",QDir::currentPath());
 }
 
 YFileIO::~YFileIO()
@@ -23,8 +25,10 @@ YFileIO::useInternalStorage()
 {
     qDebug() << "useInternalStorage()";
     QDir dir;
-    if (dir.cd("/storage/emulated/0/DCIM"))
-        return "/storage/emulated/0/DCIM";
+    if (dir.cd(_strIntStorage)){
+        _settings.setValue("path/current",_strIntStorage);
+        return _strIntStorage;
+    }
     return "false";
 }
 
@@ -39,7 +43,7 @@ YFileIO::useExternalStorage()
     else {
         QFileInfoList list = dirStorage.entryInfoList();
         for (int i=0; i<list.size(); i++){
-            if (list.at(i).fileName().contains("/storege/emulated/0")){
+            if (list.at(i).fileName().contains(_strIntStorage)){
                 qDebug() << "this is a Internal storage, skipping";
             } else {
                 camDir.clear();
@@ -49,7 +53,7 @@ YFileIO::useExternalStorage()
                 camDir.append("/DCIM");
                 dirStorage.setPath(camDir);
                 if (dirStorage.exists()){
-                    qDebug() << "Camera photoDir" << camDir;
+                    _settings.setValue("path/current",camDir);
                     return camDir;
                 }
             }
@@ -57,3 +61,20 @@ YFileIO::useExternalStorage()
     }
     return camDir;
 }
+
+
+QString
+YFileIO::usePreviousStorage()
+{
+    QString result;
+    if (_settings.value("path/current").toString().length() > 0){
+        qDebug() << "prev storage"<< _settings.value("path/current",_strIntStorage).toString();
+        result.append(_settings.value("path/current").toString());
+    }
+    else  {
+        qDebug() << "fallback to default internal storage";
+        result.append(useInternalStorage());
+    }
+    return result;
+}
+

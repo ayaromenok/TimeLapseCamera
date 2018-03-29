@@ -60,6 +60,7 @@ ApplicationWindow {
         }
         camTimer.interval = Number(tfTimerValue.text)*timerMultVal;
     }
+
     function updateStorage(){
         switch (cbStorage.currentIndex){
         case 0:
@@ -73,6 +74,14 @@ ApplicationWindow {
             break;
         }
         console.log(saveToPath)
+    }
+
+    function previousStorageIndex(){
+        saveToPath = fio.usePreviousStorage()
+        if (saveToPath.includes("emulated/0"))
+            return 0;
+        else
+            return 1;
     }
 
     Timer {
@@ -233,8 +242,10 @@ ApplicationWindow {
                     Layout.preferredWidth: dp(110)
                     Layout.minimumWidth: dp(110)
                     onCurrentIndexChanged: {
+                        console.log("change Storage")
                         updateStorage()
                     }
+                    Component.onCompleted: currentIndex = previousStorageIndex()
                 }
 
                 Rectangle {

@@ -2,6 +2,7 @@
 #define YFILEIO_H
 
 #include <QObject>
+#include <QSettings>
 
 class YFileIO : public QObject
 {
@@ -16,6 +17,11 @@ public slots:
     Q_INVOKABLE QString getCurrentDir();
     Q_INVOKABLE QString useInternalStorage();
     Q_INVOKABLE QString useExternalStorage();
+    Q_INVOKABLE QString usePreviousStorage();
+
+private:
+    QSettings _settings;
+    QString     _strIntStorage;
 };
 
 #endif // YFILEIO_H
