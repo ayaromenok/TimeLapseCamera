@@ -1,4 +1,6 @@
 QT += quick
+QT += androidextras
+
 CONFIG += c++11
 TARGET = TimeLapse_Camera
 DEFINES += QT_DEPRECATED_WARNINGS

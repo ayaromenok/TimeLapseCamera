@@ -3,12 +3,26 @@
 #include <QDir>
 #include <QStringList>
 #include <QDateTime>
+#include <QtAndroid>
+
+bool checkPermission() {
+    QtAndroid::PermissionResult r = QtAndroid::checkPermission("android.permission.WRITE_EXTERNAL_STORAGE");
+    if(r == QtAndroid::PermissionResult::Denied) {
+        QtAndroid::requestPermissionsSync( QStringList() << "android.permission.WRITE_EXTERNAL_STORAGE" );
+        r = QtAndroid::checkPermission("android.permission.WRITE_EXTERNAL_STORAGE");
+        if(r == QtAndroid::PermissionResult::Denied) {
+             return false;
+        }
+   }
+   return true;
+}
 
 YFileIO::YFileIO(QObject *parent) : QObject(parent)
 {
     qDebug() << "YFileIO()";
     _strIntStorage.append("/storage/emulated/0/DCIM");
     _strAppName.append("ZeitrafferCamera");
+    qDebug() << "check SD card write persmission" << checkPermission();
 }
 
 YFileIO::~YFileIO()

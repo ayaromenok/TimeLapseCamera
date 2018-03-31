@@ -1,0 +1,11 @@
+Nvidia Shield Tablet - android 7.0
+/dev/fuse                                      12172384 4691428   7464572  39% /storage/emulated        #int memory
+/dev/fuse                                       7758976 3041984   4716992  40% /storage/3606-1205       #SD card
+
+LG G5 SE (h840) - android 7.0
+/data/media                            24856952 22405484   2394124  91% /storage/emulated
+/mnt/media_rw/E63F-C200                15540384 13175888   2364496  85% /storage/E63F-C200
+
+Samsung S8 (950F) - android 8.0
+/data/media              56133952  4435896  51698056   8% /storage/emulated
+/mnt/media_rw/D48C-ED57  62348288 42073856  20274432  68% /storage/D48C-ED57
